@@ -1,5 +1,5 @@
 const API = "/api";
-const state = { datasets: [], experiments: [], health: null, classical: null, quantum: null };
+const state = { datasets: [], experiments: [], sessionExperiments: [], health: null, classical: null, quantum: null };
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
@@ -54,6 +54,14 @@ function formatDate(value) {
   return Number.isNaN(date.getTime()) ? "—" : new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(date);
 }
 
+function mergeExperimentRecords(remoteExperiments) {
+  const records = new Map((remoteExperiments || []).map((experiment) => [experiment.experiment_code, { ...experiment, session_only: false }]));
+  state.sessionExperiments.forEach((experiment) => {
+    if (!records.has(experiment.experiment_code)) records.set(experiment.experiment_code, experiment);
+  });
+  return [...records.values()].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+}
+
 function updateCounts() {
   $("#statDatasets").textContent = state.datasets.length;
   $("#statExperiments").textContent = state.experiments.length;
@@ -86,14 +94,15 @@ function renderExperiments() {
   const host = $("#experimentsTable");
   const summary = $("#experimentSummary");
   if (!host) return;
-  if (summary) summary.textContent = `${state.experiments.length} recorded ${state.experiments.length === 1 ? "run" : "runs"}`;
+  if (summary) summary.textContent = `${state.experiments.length} ${state.experiments.length === 1 ? "run" : "runs"}${state.sessionExperiments.length ? " · includes this-session results" : ""}`;
   if (!state.experiments.length) {
     host.innerHTML = `<div class="empty-table">No experiments recorded yet. Run preprocessing to create an experiment.</div>`;
     return;
   }
   host.innerHTML = `<table class="data-table"><thead><tr><th>EXPERIMENT</th><th>DATASET</th><th>STATUS</th><th>COMPONENTS</th><th>SEED</th><th>CREATED</th></tr></thead><tbody>${state.experiments.map((exp) => {
     const dataset = state.datasets.find((item) => item.id === exp.dataset_id);
-    return `<tr><td><div class="experiment-name"><span class="experiment-dot"></span><span><strong>${escapeHtml(exp.name || "Preprocessing run")}</strong><br><span class="code-text">${escapeHtml(exp.experiment_code)}</span></span></div></td><td>${escapeHtml(dataset?.name || `Dataset #${exp.dataset_id ?? "—"}`)}</td><td>${statusBadge(exp.status)}</td><td>${escapeHtml(exp.selected_features_count ?? "—")}</td><td>${escapeHtml(exp.random_seed ?? "—")}</td><td>${formatDate(exp.created_at)}</td></tr>`;
+    const sessionMark = exp.session_only ? `<br><small style="color:#9b91d2;font-size:8px">THIS SESSION ONLY</small>` : "";
+    return `<tr><td><div class="experiment-name"><span class="experiment-dot"></span><span><strong>${escapeHtml(exp.name || "Preprocessing run")}</strong><br><span class="code-text">${escapeHtml(exp.experiment_code)}</span>${sessionMark}</span></div></td><td>${escapeHtml(dataset?.name || `Dataset #${exp.dataset_id ?? "—"}`)}</td><td>${statusBadge(exp.status)}</td><td>${escapeHtml(exp.selected_features_count ?? "—")}</td><td>${escapeHtml(exp.random_seed ?? "—")}</td><td>${formatDate(exp.created_at)}</td></tr>`;
   }).join("")}</tbody></table>`;
 }
 
@@ -144,7 +153,7 @@ async function loadDatasets() {
 async function loadExperiments() {
   try {
     const response = await request("/experiments");
-    state.experiments = Array.isArray(response.experiments) ? response.experiments : [];
+    state.experiments = mergeExperimentRecords(Array.isArray(response.experiments) ? response.experiments : []);
     updateCounts();
   } catch (error) {
     $("#experimentsTable").innerHTML = `<div class="empty-table">Could not load experiments: ${escapeHtml(error.message)}</div>`;
@@ -208,7 +217,7 @@ async function loadDashboard() {
   }
   const results = await Promise.allSettled([request("/datasets"), request("/experiments")]);
   if (results[0].status === "fulfilled") state.datasets = results[0].value.datasets || [];
-  if (results[1].status === "fulfilled") state.experiments = results[1].value.experiments || [];
+  if (results[1].status === "fulfilled") state.experiments = mergeExperimentRecords(results[1].value.experiments || []);
   updateCounts();
 }
 
@@ -274,6 +283,20 @@ async function handlePipeline(event) {
       body: JSON.stringify({ dataset_id: datasetId, target_column: $("#targetColumn").value.trim(), test_size: testSize, random_seed: Number($("#randomSeed").value), missing_strategy: "median", scaler: "standard", variance_threshold: 0, pca_components: Number($("#pcaComponents").value) })
     });
     showPipelineResult(result);
+    const selectedDataset = state.datasets.find((dataset) => dataset.id === datasetId);
+    state.sessionExperiments.unshift({
+      id: result.experiment_id,
+      experiment_code: result.experiment_code,
+      name: `Preprocessing — ${selectedDataset?.name || `Dataset #${datasetId}`}`,
+      dataset_id: datasetId,
+      status: result.status,
+      selected_features_count: result.pca_components,
+      random_seed: result.random_seed,
+      created_at: result.created_at || new Date().toISOString(),
+      session_only: true
+    });
+    state.experiments = mergeExperimentRecords(state.experiments);
+    updateCounts();
     notify("Preprocessing complete", `${result.experiment_code} · ${result.train_samples} training and ${result.test_samples} test samples.`);
     await Promise.all([loadExperiments(), loadDatasets()]);
   } catch (error) {
