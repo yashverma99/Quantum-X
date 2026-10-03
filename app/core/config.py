@@ -10,7 +10,10 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api"
 
     # Database
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./mediqai.db")
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL",
+        "sqlite:////tmp/mediqai.db" if os.getenv("VERCEL") == "1" else "sqlite:///./mediqai.db",
+    )
 
     # Security & CORS
     SECRET_KEY: str = "mediqai_research_secret_key_change_in_production"

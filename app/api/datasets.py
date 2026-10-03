@@ -98,7 +98,11 @@ async def upload_dataset(
 
     file_hash = dataset_service.compute_file_hash(content)
 
-    save_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "datasets")
+    save_dir = (
+        "/tmp/mediqai-datasets"
+        if os.getenv("VERCEL") == "1"
+        else os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "datasets")
+    )
     os.makedirs(save_dir, exist_ok=True)
     # Safe sanitized filename
     safe_filename = f"{file_hash[:12]}_{''.join(c for c in file.filename if c.isalnum() or c in '._-')}"
