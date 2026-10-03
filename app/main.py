@@ -1,4 +1,5 @@
 import logging
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -23,6 +24,10 @@ async def lifespan(app: FastAPI):
     try:
         init_db()
         logger.info("Database schemas initialized successfully.")
+        if os.getenv("VERCEL") == "1":
+            from seed_db import seed
+
+            seed()
     except Exception as e:
         logger.warning(f"Database initialization warning: {e}. Running with database disconnected.")
     yield

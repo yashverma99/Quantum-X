@@ -3,6 +3,7 @@
   "functions": {
     "app/main.py": {
       "maxDuration": 300,
+      "includeFiles": "datasets/**",
       "excludeFiles": "{tests/**,**/__pycache__/**,**/*.pyc,.venv/**,venv/**}"
     }
   }
