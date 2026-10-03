@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="MediQAI research dashboard for biomedical data preprocessing and hybrid quantum machine learning.">
+  <title>MediQAI — Research Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#overview" aria-label="MediQAI home">
+        <span class="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4 34 12v16L20 36 6 28V12L20 4Z"/><path d="M12 22h5l3-8 4 13 3-6h2"/></svg></span>
+        <span class="brand-copy"><strong>MediQ<span>AI</span></strong><small>RESEARCH WORKSPACE</small></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <button class="nav-item active" data-page="overview"><span class="nav-icon">◫</span><span>Overview</span></button>
+        <button class="nav-item" data-page="datasets"><span class="nav-icon">▤</span><span>Datasets</span><span class="nav-count" id="navDatasetCount">0</span></button>
+        <button class="nav-item" data-page="pipeline"><span class="nav-icon">⌘</span><span>Preprocessing</span></button>
+        <button class="nav-item" data-page="experiments"><span class="nav-icon">◷</span><span>Experiments</span><span class="nav-count" id="navExperimentCount">0</span></button>
+        <button class="nav-item" data-page="models"><span class="nav-icon">⌬</span><span>Model lab</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card"><span class="help-spark">✦</span><strong>Research, responsibly.</strong><p>Decision-support prototype. Not for diagnosis or treatment decisions.</p><a href="/docs" target="_blank" rel="noreferrer">Read API docs <span>↗</span></a></div>
+        <div class="profile"><div class="avatar">M</div><div class="profile-copy"><strong>MediQAI</strong><small>Biomedical research</small></div><span class="profile-more">···</span></div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuToggle" aria-label="Toggle navigation">☰</button>
+        <div class="breadcrumbs"><span>Workspace</span><span class="crumb-slash">/</span><strong id="breadcrumbCurrent">Overview</strong></div>
+        <div class="topbar-actions"><div class="api-pill"><span class="status-dot" id="apiStatusDot"></span><span id="apiStatusText">Checking API</span></div><a class="icon-button" href="/docs" target="_blank" rel="noreferrer" aria-label="Open API documentation" title="API documentation">↗</a><button class="user-avatar" aria-label="MediQAI user">M</button></div>
+      </header>
+
+      <div class="content-wrap">
+        <section class="page active" id="page-overview">
+          <div class="page-heading"><div><p class="eyebrow">MONDAY, YOUR RESEARCH STARTS HERE</p><h1>Research overview<span class="heading-period">.</span></h1><p class="page-subtitle">A clear view of your biomedical data and quantum-ready workflows.</p></div><button class="button button-primary" data-go="pipeline"><span>＋</span> New pipeline</button></div>
+          <div class="hero-card"><div class="hero-copy"><span class="hero-kicker"><span class="pulse-dot"></span> HYBRID ML WORKSPACE</span><h2>From raw data to<br><em>quantum-ready</em> insights.</h2><p>Inspect a cohort, build a leakage-safe preprocessing pipeline, and prepare reproducible experiments.</p><button class="button button-light" data-go="pipeline">Start a pipeline <span>→</span></button></div><div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div><div class="core-node">Q</div><span class="orbit-node node-a"></span><span class="orbit-node node-b"></span><span class="orbit-node node-c"></span><span class="orbit-node node-d"></span><div class="art-label label-a">CLASSICAL</div><div class="art-label label-b">QUANTUM</div></div><div class="hero-decoration">M</div></div>
+          <div class="section-title-row"><div><p class="eyebrow">YOUR WORKSPACE</p><h2>At a glance</h2></div><span class="last-updated" id="lastUpdated">Updating…</span></div>
+          <div class="stats-grid">
+            <article class="stat-card"><div class="stat-top"><span class="stat-label">Available datasets</span><span class="stat-icon icon-violet">▤</span></div><div class="stat-value" id="statDatasets">—</div><div class="stat-foot"><span class="stat-caption">Cohorts in your workspace</span><button class="text-link" data-go="datasets">View all →</button></div></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-label">Experiments</span><span class="stat-icon icon-blue">◷</span></div><div class="stat-value" id="statExperiments">—</div><div class="stat-foot"><span class="stat-caption">Preprocessing runs recorded</span><button class="text-link" data-go="experiments">Explore →</button></div></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-label">Quantum simulator</span><span class="stat-icon icon-mint">⌬</span></div><div class="stat-value stat-word" id="statQuantum">Checking</div><div class="stat-foot"><span class="stat-caption" id="quantumCaption">Aer simulator status</span><span class="mini-status" id="quantumBadge">—</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-label">API health</span><span class="stat-icon icon-amber">⌁</span></div><div class="stat-value stat-word" id="statHealth">Checking</div><div class="stat-foot"><span class="stat-caption" id="healthCaption">Backend connection</span><button class="text-link" id="refreshButton">Refresh ↻</button></div></article>
+          </div>
+          <div class="dashboard-grid"><section class="panel recent-panel"><div class="panel-heading"><div><h3>Recent experiments</h3><p>Your latest preprocessing activity</p></div><button class="text-link" data-go="experiments">View all →</button></div><div id="recentExperiments" class="table-wrap"><div class="loading-line"><span></span>Loading activity</div></div></section><section class="panel quick-panel"><div class="panel-heading"><div><h3>Quick start</h3><p>Pick up where your research begins</p></div><span class="quick-spark">✦</span></div><button class="quick-action" data-go="datasets"><span class="quick-action-icon">▤</span><span><strong>Explore datasets</strong><small>Review your biomedical cohorts</small></span><b>→</b></button><button class="quick-action" data-go="pipeline"><span class="quick-action-icon action-cyan">⌘</span><span><strong>Run preprocessing</strong><small>Create a leakage-safe split</small></span><b>→</b></button><a class="quick-action" href="/docs" target="_blank" rel="noreferrer"><span class="quick-action-icon action-amber">⌘</span><span><strong>API reference</strong><small>Explore endpoints and schemas</small></span><b>↗</b></a><div class="safety-note"><span>ⓘ</span><p>For research and educational use only. Not an autonomous diagnostic tool.</p></div></section></div>
+          <footer class="page-footer"><span>© 2026 MediQAI Research Workspace</span><span>Human-in-the-loop · Research use only</span></footer>
+        </section>
+
+        <section class="page" id="page-datasets">
+          <div class="page-heading"><div><p class="eyebrow">DATA MANAGEMENT</p><h1>Datasets<span class="heading-period">.</span></h1><p class="page-subtitle">Inspect cohorts and prepare clean inputs for reproducible research.</p></div><button class="button button-primary" id="openUpload"><span>＋</span> Upload CSV</button></div>
+          <div class="notice-banner"><span class="notice-icon">ⓘ</span><div><strong>Use de-identified research data only.</strong><p>Vercel serverless storage is temporary. Uploaded files can disappear when instances restart. CSV uploads are limited to 4 MB here.</p></div></div>
+          <div class="dataset-toolbar"><div class="search-box"><span>⌕</span><input id="datasetSearch" type="search" placeholder="Search datasets…" aria-label="Search datasets"></div><button class="button button-outline" id="reloadDatasets">↻ <span>Refresh</span></button></div>
+          <div class="dataset-grid" id="datasetGrid"><div class="empty-state"><div class="empty-icon">▤</div><strong>Loading datasets…</strong><p>Connecting to the research workspace.</p></div></div>
+        </section>
+
+        <section class="page" id="page-pipeline">
+          <div class="page-heading"><div><p class="eyebrow">LEAKAGE-SAFE WORKFLOW</p><h1>Preprocessing lab<span class="heading-period">.</span></h1><p class="page-subtitle">Split first, fit transformations on training data only, and create a quantum-ready representation.</p></div><span class="workflow-tag"><span class="status-dot green-dot"></span> Reproducible workflow</span></div>
+          <div class="pipeline-layout"><section class="panel pipeline-form-panel"><div class="panel-heading"><div><h3>Configure your pipeline</h3><p>Choose the input cohort and preprocessing settings.</p></div><span class="step-count">STEP 01 <i>/ 01</i></span></div><form id="pipelineForm" class="form-grid"><label class="field full-field"><span>Dataset <b>*</b></span><select id="pipelineDataset" required><option value="">Loading datasets…</option></select><small>Select a cohort from your workspace.</small></label><label class="field"><span>Target column <b>*</b></span><input id="targetColumn" type="text" value="diagnosis" required placeholder="e.g. diagnosis"><small>Column containing the label.</small></label><label class="field"><span>Test split <b>*</b></span><div class="input-suffix"><input id="testSize" type="number" min="0.05" max="0.5" step="0.05" value="0.2" required><span>ratio</span></div><small>Between 0.05 and 0.50.</small></label><label class="field"><span>PCA components <b>*</b></span><select id="pcaComponents"><option value="2">2 components</option><option value="4" selected>4 components</option><option value="6">6 components</option><option value="8">8 components</option><option value="16">16 components</option></select><small>Reduced feature dimensions.</small></label><label class="field"><span>Random seed <b>*</b></span><input id="randomSeed" type="number" min="0" value="42" required><small>Use the same seed to reproduce results.</small></label><div class="form-divider full-field"></div><div class="pipeline-method full-field"><div class="method-icon">⌘</div><div><strong>Leakage-safe preprocessing</strong><p>Stratified split · median imputation · standard scaling · PCA · angle encoding</p></div><span class="method-check">✓</span></div><div class="form-actions full-field"><span class="form-footnote">Results are research outputs, not clinical guidance.</span><button class="button button-primary" id="runPipelineButton" type="submit">Run preprocessing <span>→</span></button></div></form></section>
+            <aside class="pipeline-aside"><div class="panel process-panel"><div class="panel-heading"><div><h3>Pipeline steps</h3><p>What happens to your data</p></div></div><div class="process-step"><span class="process-number">01</span><div><strong>Stratified split</strong><p>Partition before fitting any transformations.</p></div></div><div class="process-step"><span class="process-number">02</span><div><strong>Scale &amp; impute</strong><p>Fit only on the training partition.</p></div></div><div class="process-step"><span class="process-number">03</span><div><strong>Reduce dimensions</strong><p>PCA fitted on training data only.</p></div></div><div class="process-step"><span class="process-number">04</span><div><strong>Quantum mapping</strong><p>Map features to angle-ready values.</p></div></div><div class="process-foot"><span>⛨</span> Train/test leakage safeguards enabled</div></div><div class="panel result-panel" id="pipelineResult"><div class="result-placeholder"><span class="result-placeholder-icon">⌁</span><strong>Your results will appear here</strong><p>Run the preprocessing pipeline to see the split summary and quantum-ready feature vector.</p></div></div></aside>
+          </div>
+        </section>
+
+        <section class="page" id="page-experiments">
+          <div class="page-heading"><div><p class="eyebrow">REPRODUCIBILITY</p><h1>Experiments<span class="heading-period">.</span></h1><p class="page-subtitle">Review preprocessing runs and their recorded configurations.</p></div><button class="button button-primary" data-go="pipeline"><span>＋</span> New experiment</button></div>
+          <section class="panel full-table-panel"><div class="panel-heading"><div><h3>Experiment history</h3><p id="experimentSummary">Loading recorded runs…</p></div><button class="button button-outline" id="reloadExperiments">↻ <span>Refresh</span></button></div><div id="experimentsTable" class="table-wrap"><div class="loading-line"><span></span>Loading experiments</div></div></section>
+        </section>
+
+        <section class="page" id="page-models">
+          <div class="page-heading"><div><p class="eyebrow">CLASSICAL + QUANTUM</p><h1>Model lab<span class="heading-period">.</span></h1><p class="page-subtitle">Check runtime availability before training research baselines.</p></div><button class="button button-outline" id="refreshModels">↻ <span>Refresh status</span></button></div>
+          <div class="models-status-grid"><article class="panel model-status-card"><div class="model-card-icon icon-violet">Σ</div><div class="model-card-heading"><h3>Classical ML</h3><span class="mini-status" id="classicalStatusBadge">Checking</span></div><p>Logistic regression, random forest, and RBF-SVM baselines.</p><div id="classicalModels" class="model-list"><div class="loading-line"><span></span>Checking model availability</div></div></article><article class="panel model-status-card"><div class="model-card-icon icon-mint">⌬</div><div class="model-card-heading"><h3>Quantum simulator</h3><span class="mini-status" id="quantumStatusBadge">Checking</span></div><p>Qiskit Aer simulation runtime for circuit execution.</p><div id="quantumDetails" class="quantum-details"><div class="loading-line"><span></span>Checking simulator</div></div><a class="button button-outline model-doc-link" href="/docs" target="_blank" rel="noreferrer">Explore quantum endpoints <span>↗</span></a></article></div>
+          <div class="notice-banner notice-caution"><span class="notice-icon">ⓘ</span><div><strong>Execution limits apply.</strong><p>Quantum training can be computationally expensive and may exceed serverless request time limits. Use this workspace for small research experiments.</p></div></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <dialog class="modal" id="uploadDialog"><form id="uploadForm" class="modal-card"><div class="modal-heading"><div><p class="eyebrow">ADD TO WORKSPACE</p><h2>Upload a dataset</h2></div><button class="modal-close" type="button" data-close="uploadDialog" aria-label="Close">×</button></div><p class="modal-description">Upload a CSV cohort for inspection and preprocessing. Maximum 4 MB on this serverless deployment.</p><label class="field"><span>Dataset name <b>*</b></span><input name="name" required maxlength="100" placeholder="e.g. Breast cancer cohort"></label><label class="field"><span>Target column</span><input name="target_column" placeholder="e.g. diagnosis"></label><label class="field"><span>Description</span><input name="description" maxlength="500" placeholder="Optional research note"></label><label class="file-drop" for="datasetFile"><span class="file-drop-icon">↑</span><strong id="fileName">Choose a CSV file</strong><small>CSV · Maximum 4 MB</small><input id="datasetFile" name="file" type="file" accept=".csv,text/csv" required></label><div class="modal-actions"><button class="button button-outline" type="button" data-close="uploadDialog">Cancel</button><button class="button button-primary" id="uploadButton" type="submit">Upload dataset <span>→</span></button></div></form></dialog>
+
+  <dialog class="modal" id="previewDialog"><div class="modal-card modal-wide"><div class="modal-heading"><div><p class="eyebrow">DATASET PREVIEW</p><h2 id="previewTitle">Cohort preview</h2></div><button class="modal-close" type="button" data-close="previewDialog" aria-label="Close">×</button></div><div id="previewContent"><div class="loading-line"><span></span>Loading sample rows</div></div></div></dialog>
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
