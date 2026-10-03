@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="theme.css">
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -42,7 +43,7 @@
 
       <div class="content-wrap">
         <section class="page active" id="page-overview">
-          <div class="page-heading"><div><p class="eyebrow">MONDAY, YOUR RESEARCH STARTS HERE</p><h1>Research overview<span class="heading-period">.</span></h1><p class="page-subtitle">A clear view of your biomedical data and quantum-ready workflows.</p></div><button class="button button-primary" data-go="pipeline"><span>＋</span> New pipeline</button></div>
+          <div class="page-heading"><div><p class="eyebrow" id="todayLabel">YOUR RESEARCH WORKSPACE</p><h1>Research overview<span class="heading-period">.</span></h1><p class="page-subtitle">A clear view of your biomedical data and quantum-ready workflows.</p></div><button class="button button-primary" data-go="pipeline"><span>＋</span> New pipeline</button></div>
           <div class="hero-card"><div class="hero-copy"><span class="hero-kicker"><span class="pulse-dot"></span> HYBRID ML WORKSPACE</span><h2>From raw data to<br><em>quantum-ready</em> insights.</h2><p>Inspect a cohort, build a leakage-safe preprocessing pipeline, and prepare reproducible experiments.</p><button class="button button-light" data-go="pipeline">Start a pipeline <span>→</span></button></div><div class="hero-art" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div><div class="core-node">Q</div><span class="orbit-node node-a"></span><span class="orbit-node node-b"></span><span class="orbit-node node-c"></span><span class="orbit-node node-d"></span><div class="art-label label-a">CLASSICAL</div><div class="art-label label-b">QUANTUM</div></div><div class="hero-decoration">M</div></div>
           <div class="section-title-row"><div><p class="eyebrow">YOUR WORKSPACE</p><h2>At a glance</h2></div><span class="last-updated" id="lastUpdated">Updating…</span></div>
           <div class="stats-grid">

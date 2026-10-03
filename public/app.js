@@ -325,6 +325,7 @@ function closeDialog(id) {
 }
 
 function initialize() {
+  $("#todayLabel").textContent = `${new Intl.DateTimeFormat(undefined, { weekday: "long" }).format(new Date()).toUpperCase()}, YOUR RESEARCH STARTS HERE`;
   $$(".nav-item").forEach((item) => item.addEventListener("click", () => showPage(item.dataset.page)));
   $$('[data-go]').forEach((item) => item.addEventListener("click", () => showPage(item.dataset.go)));
   $("#menuToggle").addEventListener("click", () => $("#sidebar").classList.toggle("open"));
